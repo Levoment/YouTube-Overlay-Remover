@@ -1,0 +1,35 @@
+{
+
+    "manifest_version": 2,
+    "name": "YouTube Overlay Remover",
+    "version": "1.0",
+  
+    "description": "Removes YouTube end of video overlays",
+  
+    "icons": {
+      "48": "icons/yt_overlay_remover_48.png"
+    },
+
+    "browser_action": {
+        "default_icon": "icons/yt_overlay_remover_48.png",
+        "default_title": "YouTube Overlay Remover",
+        "default_popup": "popup/youtube_overlay_remover.html"
+      },
+
+      "background": {
+        "scripts": ["background.js"]
+      },
+  
+    "content_scripts": [
+      {
+        "matches": ["*://*.youtube.com/*"],
+        "js": ["content_scripts/yt_overlay_remover.js"]
+      }
+    ],
+    "permissions": [
+      "*://youtube.com/*",
+      "tabs",
+      "storage"
+    ]
+  
+  }
