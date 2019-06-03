@@ -23,7 +23,7 @@
     "content_scripts": [
       {
         "matches": ["*://*.youtube.com/*"],
-        "js": ["content_scripts/yt_overlay_remover.js"]
+        "js": ["js/jquery-3.4.1.min.js", "content_scripts/yt_overlay_remover.js"]
       }
     ],
     "permissions": [

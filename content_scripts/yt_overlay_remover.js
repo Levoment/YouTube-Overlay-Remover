@@ -3,102 +3,48 @@
 var yorExtensionState = {"enabled": true};
 // Add listener for receiving communication from background script
 browser.runtime.onMessage.addListener( (message) => {
-    
     removeOverlays();
   });
 
 function removeOverlays() {
-    
-    // Select the node that will be observed for mutations
-    var targetNode = document.getElementById("movie_player");
-
-    // Options for the observer (observe child and its descendants for mutations as well as attribute changes in them)
-    var overlayObserverConfiguration = { attributes: true, childList: true, subtree: true };
-
-    // When mutations are observed
-    var overlayMutationObserverCallback = function(mutationRecordList, observer) {
-        // Iterate through the list of MutationRecords
-        mutationRecordList.forEach((mutation) => {
-            switch(mutation.type) {
-                // When a node is added or removed
-                case 'childList':
-                    mutation.addedNodes.forEach((addedNode) => {
-                        // Check if the node contains class name "ytp-ce-video"
-                        if (addedNode.className.includes("ytp-ce-video")) {
-                            // Hide the node
-                            addedNode.style.display = "none";
-                        }
-                        // Check if the node contains class name "ytp-ce-channel"
-                        if (addedNode.className.includes("ytp-ce-channel")) {
-                            // Hide the node
-                            addedNode.style.display = "none";
-                        }
-                        // Check if the node contains class name "ytp-ce-playlist"
-                        if (addedNode.className.includes("ytp-ce-playlist")) {
-                            // Hide the node
-                            addedNode.style.display = "none";
-                        }
-                    });
-                    break;
-                // When a node attribute changed
-                case 'attributes':
-                    mutation.addedNodes.forEach((addedNode) => {
-                        // Check if the node contains class name "ytp-ce-video"
-                        if (addedNode.className.includes("ytp-ce-video")) {
-                            // Hide the node
-                            addedNode.style.display = "none";
-                        }
-                        // Check if the node contains class name "ytp-ce-channel"
-                        if (addedNode.className.includes("ytp-ce-channel")) {
-                            // Hide the node
-                            addedNode.style.display = "none";
-                        }
-                        // Check if the node contains class name "ytp-ce-playlist"
-                        if (addedNode.className.includes("ytp-ce-playlist")) {
-                            // Hide the node
-                            addedNode.style.display = "none";
-                        }
-                    });
-                    break;
-            }
-          });
-    };
-
-    // Get the list of overlays that relate to videos
-    let listOfVideoOverlays = document.getElementsByClassName("ytp-ce-element ytp-ce-video");
-    if (listOfVideoOverlays.length > 0) {
-        // Iterate through each found Video overlay
-        for (let elem of listOfVideoOverlays){
-            // Hide the overlay
-            elem.style.display = "none";
+        browser.storage.local.get("yorExtensionState").then(gotYORState, onError);
+        // Check if our extension is enabled
+        if (yorExtensionState.enabled) {
+            // Video overlays
+            $('.ytp-ce-video').map(function () {
+                // Hide the element
+                $( this ).css('display', 'none');
+            });
+            // Channel overlays
+            $('.ytp-ce-channel').map(function () {
+                // Hide the element
+                $( this ).css('display', 'none');
+            });
+            // Playlist overlays
+            $('.ytp-ce-playlist').map(function () {
+                // Hide the element
+                $( this ).css('display', 'none');
+            });
+            
+        } else {
+            // Video overlays
+            $('.ytp-ce-video').map(function () {
+                // Show the element
+                $( this ).css('display', 'inline');
+            });
+            // Channel overlays
+            $('.ytp-ce-channel').map(function () {
+                // Show the element
+                $( this ).css('display', 'inline');
+            });
+            // Playlist overlays
+            $('.ytp-ce-playlist').map(function () {
+                // Show the element
+                $( this ).css('display', 'inline');
+            });
         }
-    }
-    // Get the list of overlays that relate to the channel overlay
-    let listOfChannelOverlays = document.getElementsByClassName("ytp-ce-element ytp-ce-channel");
-    if (listOfChannelOverlays.length > 0) {
-        // Iterate through each found channel overlay
-        for (let elem of listOfChannelOverlays){
-            // Hide the overlay
-            elem.style.display = "none";
-        }
-    }
-    // Get the list of overlays that relate to Playlists
-    let listOfPlaylistOverlays = document.getElementsByClassName("ytp-ce-element ytp-ce-playlist");
-    if (listOfPlaylistOverlays.length > 0) {
-        // Iterate through each found channel Playlist overlay
-        for (let elem of listOfPlaylistOverlays){
-            // Hide the overlay
-            elem.style.display = "none";
-        }
-    }
-
-    // Create an observer instance linked to the callback function
-    var observer = new MutationObserver(overlayMutationObserverCallback);
-
-    if(targetNode != null) {
-        // Start observing the target node for configured mutations
-        observer.observe(targetNode, overlayObserverConfiguration);
-    }
+        // Run the function every 3 seconds
+        setTimeout(removeOverlays, 3000);
 }
 
 // When the switch state changes
@@ -107,12 +53,25 @@ $('#onOffSwitchYOR').change(function() {
     yorExtensionState.enabled = ($('#onOffSwitchYOR').is(":checked"));
     // Save the current state
     browser.storage.local.set({yorExtensionState});
+    // Get the current active tab
+    browser.tabs.query({active:true,currentWindow:true}).then(function(tabs){
+        // YouTube URL pattern
+        let urlPattern = new RegExp("^((http[s]?):\/\/.*youtube.com.*)");
+        // Get the current active tab URL
+        var currentTabUrl = tabs[0].url;
+        // Check if we are on a YouTube webpage by URL
+        if (urlPattern.test(currentTabUrl)) {
+            // Reload the tab
+            browser.tabs.reload();
+        }
+    });
 });
 
 $(document).ready(function() {
     // Load the extension previous state
     browser.storage.local.get("yorExtensionState").then(gotYORState, onError);
 });
+
 
 function gotYORState(item) {
     // Set the button to the previous state
@@ -123,7 +82,6 @@ function gotYORState(item) {
     } else {
         console.log("Error while loading previous Youtube Overlay Remover On/Off state.");
     }
-    
 }
 
 function onError(error) {
