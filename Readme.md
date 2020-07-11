@@ -15,7 +15,7 @@ By default, the extension is enabled. If you would like to disable it, press the
 
 # License
 
-Components of this code are licensed under the **MIT License**. The rest of the code is released under **CC0 1.0 License**.
+Some components of this code are licensed under the **MIT License**. The rest of the code is released under **CC0 1.0 License**.
 
 ## Components
 - ### [Primer](https://primer.style/) - [MIT License](/popup/css/LICENSE.txt)
