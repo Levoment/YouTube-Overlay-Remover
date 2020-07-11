@@ -90,6 +90,28 @@ function mutationObserverCallback(mutationList, mutationObserver) {
         }
     }
 
+    // Get all elements with class 'ytp-ce-covering-overlay'
+    elements = document.getElementsByClassName("ytp-ce-covering-overlay");
+    // If there are elements
+    if (elements.length > 0) {
+        // Iterate through the elements
+        for (var i = 0; i < elements.length; i++) {
+            // Change the element display style to none
+            elements[i].style.display = "none";
+        }
+    }
+
+    // Get all elements with class 'ytp-ce-expanding-overlay'
+    elements = document.getElementsByClassName("ytp-ce-expanding-overlay");
+    // If there are elements
+    if (elements.length > 0) {
+        // Iterate through the elements
+        for (var i = 0; i < elements.length; i++) {
+            // Change the element display style to none
+            elements[i].style.display = "none";
+        }
+    }
+
     // Check if the extension status is disabled
     if (!currentStatus) {
         elements = document.getElementsByClassName("ytp-ce-element");
@@ -130,6 +152,28 @@ function mutationObserverCallback(mutationList, mutationObserver) {
             // Iterate through the elements
             for (var i = 0; i < elements.length; i++) {
                 // Change the element display style to block
+                elements[i].style.display = "block";
+            }
+        }
+
+        // Get all elements with class 'ytp-ce-covering-overlay'
+        elements = document.getElementsByClassName("ytp-ce-covering-overlay");
+        // If there are elements
+        if (elements.length > 0) {
+            // Iterate through the elements
+            for (var i = 0; i < elements.length; i++) {
+                // Change the element display style to none
+                elements[i].style.display = "block";
+            }
+        }
+
+        // Get all elements with class 'ytp-ce-expanding-overlay'
+        elements = document.getElementsByClassName("ytp-ce-expanding-overlay");
+        // If there are elements
+        if (elements.length > 0) {
+            // Iterate through the elements
+            for (var i = 0; i < elements.length; i++) {
+                // Change the element display style to none
                 elements[i].style.display = "block";
             }
         }
