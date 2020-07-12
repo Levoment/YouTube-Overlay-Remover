@@ -1,5 +1,10 @@
 // Add a listener for incoming messages
-browser.runtime.onMessage.addListener(handleMessages);
+if (typeof browser !== 'undefined' && (typeof browser.runtime !== 'undefined' && browser.runtime != null)) {
+    browser.runtime.onMessage.addListener(handleMessages);
+} else if (typeof chrome !== 'undefined' && (typeof chrome.runtime !== 'undefined' && chrome.runtime != null)) {
+    chrome.runtime.onMessage.addListener(handleMessages);
+}
+
 // Variable to keep the extension status
 var currentStatus;
 
@@ -10,8 +15,14 @@ function handleMessages(message, sender, sendResponse) {
         // Set the current state (enabled or disabled)
         currentStatus = message.currentStatus;
         // Query the tabs and notify the content scripts of changes
-        let querying = browser.tabs.query({
-        }, notifyOfChanges);
+        if (typeof browser !== 'undefined' && (typeof browser.runtime !== 'undefined' && browser.runtime != null)) {
+            let querying = browser.tabs.query({
+            }, notifyOfChanges);
+        } else if (typeof chrome !== 'undefined' && (typeof chrome.runtime !== 'undefined' && chrome.runtime != null)) {
+            let querying = chrome.tabs.query({
+            }, notifyOfChanges);
+        }
+        
     } else if (message.operation == 'getCurrentState') {
         // We are asked to give the current state of the extension
         // Get if we currently have a status
@@ -30,9 +41,17 @@ function notifyOfChanges(tabs) {
     // Iterate through all the given tabs
     for (let tab of tabs) {
         // Send a message to the tabs to indicate the content scripts the status of the extension
-        browser.tabs.sendMessage(
-            tab.id,
-            { "operation": "yorStatusChanged", "currentStatus": currentStatus }
-        );
+        if (typeof browser !== 'undefined' && (typeof browser.runtime !== 'undefined' && browser.runtime != null)) {
+            browser.tabs.sendMessage(
+                tab.id,
+                { "operation": "yorStatusChanged", "currentStatus": currentStatus }
+            );
+        } else if (typeof chrome !== 'undefined' && (typeof chrome.runtime !== 'undefined' && chrome.runtime != null)) {
+            chrome.tabs.sendMessage(
+                tab.id,
+                { "operation": "yorStatusChanged", "currentStatus": currentStatus }
+            );
+        }
+        
     }
 }

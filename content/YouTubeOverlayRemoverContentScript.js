@@ -2,8 +2,14 @@
 console.info("YouTube Overlay Remover Loaded");
 var currentStatus;
 
-// Set a listener for when messages are received from the background script
-browser.runtime.onMessage.addListener(handleReceivedMessages);
+if (typeof browser !== 'undefined' && (typeof browser.runtime !== 'undefined' && browser.runtime != null)) {
+    // Set a listener for when messages are received from the background script
+    browser.runtime.onMessage.addListener(handleReceivedMessages);
+} else if (typeof chrome !== 'undefined' && (typeof chrome.runtime !== 'undefined' && chrome.runtime != null)) {
+    // Set a listener for when messages are received from the background script
+    chrome.runtime.onMessage.addListener(handleReceivedMessages);
+}
+
 
 function handleReceivedMessages(message, sender, sendResponse) {
     // If the message is 'yorStatusChanged'
@@ -33,8 +39,13 @@ var observerOptions = {
 // Create the MutationObserver
 var observer = new MutationObserver(mutationObserverCallback);
 
-// Get the current state of the extension
-var sendMessage = browser.runtime.sendMessage({ "operation": "getCurrentState" }, handleGetStatusResponse);
+if (typeof browser !== 'undefined' && (typeof browser.runtime !== 'undefined' && browser.runtime != null)) {
+    // Set a listener for when messages are received from the background script
+    browser.runtime.sendMessage({ "operation": "getCurrentState" }, handleGetStatusResponse);
+} else if (typeof chrome !== 'undefined' && (typeof chrome.runtime !== 'undefined' && chrome.runtime != null)) {
+    // Set a listener for when messages are received from the background script
+    chrome.runtime.sendMessage({ "operation": "getCurrentState" }, handleGetStatusResponse);
+}
 
 // Function to handle responses from the background script
 function handleGetStatusResponse(message) {

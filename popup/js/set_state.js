@@ -3,7 +3,12 @@ var stateButton =  document.getElementById('statusButton');
 var currentState;
 
 // Get the current state of the extension
-var sendMessage = browser.runtime.sendMessage({"operation": "getCurrentState"}, handleResponse);
+if (typeof browser !== 'undefined' && (typeof browser.runtime !== 'undefined' && browser.runtime != null)) {
+    browser.runtime.sendMessage({"operation": "getCurrentState"}, handleResponse);
+} else if (typeof chrome !== 'undefined' && (typeof chrome.runtime !== 'undefined' && chrome.runtime != null)) {
+    chrome.runtime.sendMessage({"operation": "getCurrentState"}, handleResponse);
+}
+
 
 // Function to handle responses from the background script
 function handleResponse(message) {
@@ -42,7 +47,11 @@ function changeCurrentState() {
         stateButton.className = 'btn btn-danger btn-block';
         stateButton.innerText = 'Disabled';
         // Save the current state
-        browser.runtime.sendMessage({"operation": "setCurrentState", "currentStatus": false});
+        if (typeof browser !== 'undefined' && (typeof browser.runtime !== 'undefined' && browser.runtime != null)) {
+            browser.runtime.sendMessage({"operation": "setCurrentState", "currentStatus": false});
+        } else if (typeof chrome !== 'undefined' && (typeof chrome.runtime !== 'undefined' && chrome.runtime != null)) {
+            chrome.runtime.sendMessage({"operation": "setCurrentState", "currentStatus": false});
+        }
         // Update the current state
         currentState = false;
     } else {
@@ -50,7 +59,11 @@ function changeCurrentState() {
         stateButton.className = 'btn btn-primary btn-block';
         stateButton.innerText = 'Enabled';
         // Save the current state
-        browser.runtime.sendMessage({"operation": "setCurrentState", "currentStatus": true});
+        if (typeof browser !== 'undefined' && (typeof browser.runtime !== 'undefined' && browser.runtime != null)) {
+            browser.runtime.sendMessage({"operation": "setCurrentState", "currentStatus": true});
+        } else if (typeof chrome !== 'undefined' && (typeof chrome.runtime !== 'undefined' && chrome.runtime != null)) {
+            chrome.runtime.sendMessage({"operation": "setCurrentState", "currentStatus": true});
+        }
         // Update the current state
         currentState = true;
     }
